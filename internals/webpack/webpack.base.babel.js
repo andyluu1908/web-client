@@ -5,7 +5,7 @@
 const path = require('path')
 const webpack = require('webpack')
 // const atLoader = require('awesome-typescript-loader')
-const atLoader = require('ts-loader')
+//const atLoader = require('ts-loader')
 require('dotenv').config() // Initializes environment variables from .env file
 
 module.exports = options => ({
@@ -39,9 +39,7 @@ module.exports = options => ({
         // So, no need for ExtractTextPlugin here.
         test: /\.css$/,
         include: /node_modules/,
-        use: [
-            { loader: 'style-loader' },
-            { loader: 'css-loader' }]
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
@@ -51,7 +49,8 @@ module.exports = options => ({
         test: /\.(jpg|png|gif)$/,
         use: [
           { loader: 'file-loader' },
-          { loader: 'image-webpack-loader',
+          {
+            loader: 'image-webpack-loader',
             options: {
               query: {
                 progressive: true,
@@ -72,8 +71,8 @@ module.exports = options => ({
       },
       {
         test: /\.(mp4|webm)$/,
-        use:
-        { loader: 'url-loader',
+        use: {
+          loader: 'url-loader',
           options: {
             query: {
               limit: 10000
@@ -84,9 +83,10 @@ module.exports = options => ({
       {
         test: /\.tsx?$/,
         use: [
-          { loader: 'react-hot-loader'},
+          { loader: 'react-hot-loader' },
           // { loader: 'awesome-typescript-loader' }
-          { loader: 'ts-loader' }]
+          { loader: 'ts-loader' }
+        ]
       },
       {
         test: /\.scss$/,

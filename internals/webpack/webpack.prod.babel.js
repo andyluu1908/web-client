@@ -1,9 +1,9 @@
 // Important modules this config uses
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const OfflinePlugin = require('offline-plugin')
+//const HtmlWebpackPlugin = require('html-webpack-plugin')
+//const OfflinePlugin = require('offline-plugin')
 // const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = require('./webpack.base.babel')({
   mode: 'production',
@@ -16,7 +16,6 @@ module.exports = require('./webpack.base.babel')({
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].chunk.js'
   },
-
 
   plugins: [],
   /*
@@ -83,14 +82,15 @@ module.exports = require('./webpack.base.babel')({
         }
       })
     ],
-    splitChunks: { // CommonsChunkPlugin()
+    splitChunks: {
+      // CommonsChunkPlugin()
       name: 'vendor',
       minChunks: 2,
       children: true,
       async: true
     }
-//    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
-//    concatenateModules: true //ModuleConcatenationPlugin
+    //    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+    //    concatenateModules: true //ModuleConcatenationPlugin
   },
 
   performance: {
