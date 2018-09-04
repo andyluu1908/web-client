@@ -26,6 +26,8 @@ const plugins = [
 ]
 
 module.exports = require('./webpack.base.babel')({
+  mode: 'development',
+
   // Add hot reloading in development
   entry: [
     'eventsource-polyfill', // Necessary for hot reloading with IE
@@ -74,6 +76,8 @@ function dependencyHandlers() {
     return []
   }
 
+  /*
+  The plugin is deprecated
   // If the package.json does not have a dllPlugin property, use the CommonsChunkPlugin
   if (!dllPlugin) {
     return [
@@ -85,6 +89,7 @@ function dependencyHandlers() {
       })
     ]
   }
+  */
 
   const dllPath = path.resolve(
     process.cwd(),

@@ -24,8 +24,5 @@
   "exclude": [
     "./app/submodules/**/*",
     "./app/**/*.graphql.js"
-  ],
-  "awesomeTypescriptLoaderOptions": {
-    "useBabel": true
-  }
+  ]
 }

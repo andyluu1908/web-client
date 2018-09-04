@@ -1,11 +1,13 @@
 // Important modules this config uses
 const path = require('path')
-const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const OfflinePlugin = require('offline-plugin')
 // const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = require('./webpack.base.babel')({
+  mode: 'production',
+
   // In production, we skip all hot-reloading stuff
   entry: [path.join(process.cwd(), 'app/app.tsx')],
 
@@ -15,14 +17,9 @@ module.exports = require('./webpack.base.babel')({
     chunkFilename: '[name].[chunkhash].chunk.js'
   },
 
-  plugins: [
-    // new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      children: true,
-      minChunks: 2,
-      async: true
-    }),
+
+  plugins: [],
+  /*
     // new LodashModuleReplacementPlugin({
     //   paths: true
     // }),
@@ -30,6 +27,7 @@ module.exports = require('./webpack.base.babel')({
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
       template: 'app/index.html',
+
       minify: {
         removeComments: true,
         collapseWhitespace: true,
@@ -42,6 +40,7 @@ module.exports = require('./webpack.base.babel')({
         minifyCSS: true,
         minifyURLs: true
       },
+
       inject: true
     }),
 
@@ -67,9 +66,32 @@ module.exports = require('./webpack.base.babel')({
       // Removes warning for about `additional` section usage
       safeToUseOptionalCaches: true,
 
-      AppCache: false
+      AppCache: false,
+      ServiceWorker: { minify: false }
     })
+
   ],
+*/
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          compress: {
+            inline: false
+          }
+        }
+      })
+    ],
+    splitChunks: { // CommonsChunkPlugin()
+      name: 'vendor',
+      minChunks: 2,
+      children: true,
+      async: true
+    }
+//    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+//    concatenateModules: true //ModuleConcatenationPlugin
+  },
 
   performance: {
     assetFilter: assetFilename =>

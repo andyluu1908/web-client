@@ -4,11 +4,13 @@
 
 const path = require('path')
 const webpack = require('webpack')
-const atLoader = require('awesome-typescript-loader')
+// const atLoader = require('awesome-typescript-loader')
+const atLoader = require('ts-loader')
 require('dotenv').config() // Initializes environment variables from .env file
 
 module.exports = options => ({
   entry: options.entry,
+  mode: 'development',
   output: Object.assign(
     {
       // Compile into js/build.js
@@ -18,12 +20,16 @@ module.exports = options => ({
     options.output
   ), // Merge with env dependent settings
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/, // Transform all .js files required somewhere with Babel
-        loader: 'babel-loader',
         exclude: /node_modules/,
-        query: options.babelQuery
+        use: {
+          loader: 'babel-loader',
+          options: {
+            query: options.babelQuery
+          }
+        }
       },
       {
         // Do not transform vendor's CSS with CSS-modules
@@ -33,25 +39,28 @@ module.exports = options => ({
         // So, no need for ExtractTextPlugin here.
         test: /\.css$/,
         include: /node_modules/,
-        loaders: ['style-loader', 'css-loader']
+        use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' }]
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader'
+        use: 'file-loader'
       },
       {
         test: /\.(jpg|png|gif)$/,
-        loaders: [
-          'file-loader',
-          {
-            loader: 'image-webpack-loader',
-            query: {
-              progressive: true,
-              optimizationLevel: 7,
-              interlaced: false,
-              pngquant: {
-                quality: '65-90',
-                speed: 4
+        use: [
+          { loader: 'file-loader' },
+          { loader: 'image-webpack-loader',
+            options: {
+              query: {
+                progressive: true,
+                optimizationLevel: 7,
+                interlaced: false,
+                pngquant: {
+                  quality: '65-90',
+                  speed: 4
+                }
               }
             }
           }
@@ -59,22 +68,25 @@ module.exports = options => ({
       },
       {
         test: /\.html$/,
-        loader: 'html-loader'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
+        use: 'html-loader'
       },
       {
         test: /\.(mp4|webm)$/,
-        loader: 'url-loader',
-        query: {
-          limit: 10000
+        use:
+        { loader: 'url-loader',
+          options: {
+            query: {
+              limit: 10000
+            }
+          }
         }
       },
       {
         test: /\.tsx?$/,
-        loaders: ['react-hot-loader', 'awesome-typescript-loader']
+        use: [
+          { loader: 'react-hot-loader'},
+          // { loader: 'awesome-typescript-loader' }
+          { loader: 'ts-loader' }]
       },
       {
         test: /\.scss$/,
@@ -92,8 +104,9 @@ module.exports = options => ({
       }
     ]
   },
+
   plugins: options.plugins.concat([
-    new atLoader.CheckerPlugin(),
+    // new atLoader.CheckerPlugin(),
     new webpack.ProvidePlugin({
       // make fetch available
       fetch: 'exports-loader?self.fetch!whatwg-fetch',
@@ -108,6 +121,7 @@ module.exports = options => ({
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        NODE_OPTIONS: '--max-old-space-size=4096',
         CLIENT_URL: JSON.stringify(
           process.env.CLIENT_URL || 'http://localhost:4000'
         ),
@@ -146,9 +160,13 @@ module.exports = options => ({
           process.env.ERASE_MY_DATA_FORM_URL || ''
         )
       }
-    }),
-    new webpack.NamedModulesPlugin()
+    })
   ]),
+
+  optimization: {
+    namedModules: true
+  },
+
   resolve: {
     modules: [
       path.resolve(__dirname, '../../app'),
@@ -160,6 +178,7 @@ module.exports = options => ({
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.woff'],
     mainFields: ['browser', 'jsnext:main', 'main']
   },
+
   devtool: options.devtool,
   target: 'web', // Make web variables accessible to webpack, e.g. window
   node: {
