@@ -12,6 +12,7 @@ npm-debug.log
 .envprod
 .envlan
 .envlocalhost
+nginx_config
 
 yarn-error.log
 app/**/*.js.map
@@ -21,3 +22,4 @@ app/**/!(.graphql).js
 # Graphql
 graphql.schema.json
 graphql.config.json
+
